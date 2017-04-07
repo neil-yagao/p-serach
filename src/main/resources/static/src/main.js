@@ -10,6 +10,12 @@ import WorkingSpace from './WorkingPage.vue'
 import ByNumberSearch from './component/nosearch/ByNumberSearch.vue'
 import ByTimeSearch from './component/timesearch/ByTimeSearch.vue'
 import VideoRecorder from './component/profile/VideoRecorder.vue'
+import MasterDataMain from './component/master-data/MasterDataMain.vue'
+import MasterDataMedical from './component/master-data/MasterDataMedical.vue'
+import MasterDataInmate from './component/master-data/MasterDataInmate.vue'
+import UploadFile from './component/master-data/UploadFile.vue'
+
+require("xlsx")
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
@@ -26,6 +32,23 @@ const routes = [{
     	{
     		path:"by-time",
     		component:ByTimeSearch
+    	},{
+    		path:"data-edit",
+    		component: MasterDataMain,
+    		children:[
+    			{
+    				path:"",
+					component: UploadFile
+    			},
+    			{
+					path:"medical",
+					component:MasterDataMedical
+    			},
+    			{
+					path:"inmate",
+					component:MasterDataInmate
+    			}
+    		]
     	}
     ]
 

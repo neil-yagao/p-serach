@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="page-header text-center" style="margin-top:10px">
+    <div class="page-header text-center">
 	  	<h3>按照编号搜索</h3>
 	</div>
     <div class="row">
@@ -8,7 +8,7 @@
 		    <div class="input-group">
 		      <input type="text" class="form-control" v-model="id" placeholder="编号">
 		      <span class="input-group-btn">
-		        <button class="btn btn-default" type="button" @click="doSearch()">搜索</button>
+		        <button class="btn btn-default" type="button" @click="doSearch()"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
 		      </span>
 		    </div>
 	  	</div>
