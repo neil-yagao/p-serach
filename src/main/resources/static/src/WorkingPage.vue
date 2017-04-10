@@ -50,4 +50,5 @@
 #working-area {
   min-height: 600px;
 }
+
 </style>

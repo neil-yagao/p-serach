@@ -18,6 +18,9 @@ import MasterDataInmate from './component/master-data/MasterDataInmate.vue'
 import UploadFile from './component/master-data/UploadFile.vue'
 
 require("xlsx")
+window.jQuery =require("jquery")
+require("bootstrap")
+
 
 Vue.use(VueRouter)
 Vue.use(VueResource)

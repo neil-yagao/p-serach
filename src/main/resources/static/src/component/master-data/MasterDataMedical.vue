@@ -26,7 +26,7 @@ export default {
 	data(){
 		return {
 			medical:"",
-			allList:[{"name":"medical", "number":2}]
+			allList:[]
 		}
 	},
 	computed:{
