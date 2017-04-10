@@ -49,6 +49,5 @@
 } 
 #working-area {
   min-height: 600px;
-  padding-bottom:150px; /* this needs to be bigger than footer height*/
 }
 </style>

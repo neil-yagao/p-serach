@@ -7,8 +7,6 @@ import com.alibaba.fastjson.annotation.JSONField;
  */
 
 public class Medical {
-    @JSONField
-    private String id = "";
 
     @JSONField
     private String name;
@@ -16,17 +14,12 @@ public class Medical {
     @JSONField
     private Double num;
 
+    public Medical() {
+    }
+
     public Medical(String name, Double num) {
         this.name = name;
         this.num = num;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {

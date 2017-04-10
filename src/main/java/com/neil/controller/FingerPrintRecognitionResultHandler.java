@@ -7,4 +7,5 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
  * push the result of Finger Print scan to front
  */
 public class FingerPrintRecognitionResultHandler extends TextWebSocketHandler {
+    
 }

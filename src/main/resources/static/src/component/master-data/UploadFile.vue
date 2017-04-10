@@ -33,7 +33,8 @@ export default {
             reader.onload = function(e) {
                 var content = e.target.result;
                 var wb = X.read(content, {type: 'binary'});
-                self.process_wb(wb);
+                var data = self.process_wb(wb);
+                self.handleUpdate(data)
             }
             reader.readAsBinaryString(files[0])
         },
@@ -53,11 +54,40 @@ export default {
 			return result;
 		},
 		process_wb(wb) {
-			var output = JSON.stringify(this.toJson(wb), 2, 2);
-			console.info(output)
+			var output = this.toJson(wb)
 			return output		
+		},
+		handleUpdate(data){
+			console.info(data.medicals)
+			if(data.medicals){
+				var mappedData = _.map(data.medicals, function(med){
+					return {
+						"name":med["名称"],
+						"num": med["数量"]
+					}
+				})
+				this.$http.post('http://localhost:8080/medicals', JSON.stringify(mappedData))
+				.then((response) => {
+					console.info(response.body)
+				})
+			}
+			if(data.inmates){
+				var mappedData = _.map(data.inmates, function(info){
+					return {
+						"code":info["编号"],
+						"time": info["时间"],
+						"medical":info["药物"],
+						"amount":info["数量"]
+					}
+				})
+				this.$http.post('http://localhost:8080/inmate/medical', JSON.stringify(mappedData))
+				.then((response) => {
+					console.info(response.body)
+				})
+			}
 		}
     }
+
 }
 </script>
 <style>

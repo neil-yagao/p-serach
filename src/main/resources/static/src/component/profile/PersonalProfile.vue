@@ -15,7 +15,7 @@
 					<div class="panel-body">
 						<ul class="list-group">
 						  <li class="list-group-item" v-for="medical in data.medicals">
-						    <span class="badge">{{medical.num}}</span>
+						    <span class="badge">{{medical.amount}}</span>
 						    {{medical.name}}
 						  </li>
 						</ul>
@@ -24,9 +24,6 @@
 				
 			</div>
 		</div>
-		<div class="row">
-			
-		</div>	
 	</div>
 </template>
 <script>
@@ -35,15 +32,15 @@
 export default {
 	name:'personal-profile',
 	data(){
-		return {}
-	},
-	props:{
-		data:{
-			type:Object,
-			defaule:{}
+		return {
+			data:{}
+			
 		}
+	},
+	mounted: function(){
+		var id = this.$route.params[':id']	
+		if(id != 'add'){}	
 	}
-	 
 }
 </script>
 

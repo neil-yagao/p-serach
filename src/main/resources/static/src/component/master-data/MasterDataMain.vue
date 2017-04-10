@@ -4,7 +4,7 @@
 			<div class="col-md-3"> 
 				<div class="list-group">
 					<a href="#/working/data-edit/medical"  class="list-group-item" role="button" :class="this.$route.path.indexOf('data-edit/medical') >= 0?'list-group-item-info':''">药物管理</a>
-					<a href="#/working/data-edit/inmate" class="list-group-item" role="button" :class="this.$route.path.indexOf('data-edit/inmate') >= 0?'list-group-item-info':''">服刑人员服药管理</a>
+					<a href="#/working/data-edit/inmate" class="list-group-item" role="button" :class="this.$route.path.indexOf('data-edit/inmate') >= 0?'list-group-item-info':''">服刑人员未服药记录</a>
 				</div>
 			</div>
 			<div class="col-md-9">

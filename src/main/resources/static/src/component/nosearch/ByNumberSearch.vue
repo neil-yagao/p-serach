@@ -13,13 +13,13 @@
 		    </div>
 	  	</div>
   	</div>
-  	<div class="row" v-if="currentMedical.id">
-  		<personal-profile :data="currentMedical"></personal-profile>
+  	<div class="row">
+  		<prison-panel></prison-panel>
   	</div>
 </div>
 </template>
 <script>
-import PersonalProfile from '../profile/PersonalProfile.vue'
+import InmatePanel from '../profile/PrisonMedicalPanel.vue'
 export default {
     name: 'by-number-search',
     data() {
@@ -54,7 +54,7 @@ export default {
 
     },
     components: {
-    	'personal-profile': PersonalProfile
+    	'prison-panel': InmatePanel
     }
 }
 </script>

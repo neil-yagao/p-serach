@@ -14,27 +14,13 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default" style="margin-top:20px" v-if="totals && totals.length > 0">
-        <div class="panel-heading">
-            <h3 class="panel-title">符合标准的服刑人员</h3>
-        </div>
-        <div class="panel-body">
-           <div class="row" v-for="line in totals">
-                <div class="col-md-3" v-for="prison in line">
-                    <div class="thumbnail">
-                        <img :src="prison.img" >
-                        <div class="caption">
-                            <p>编号：{{prison.code}}</p>
-                            <p><a class="btn btn-primary" role="button">查看详细服药情况</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="row">
+        <prison-panel></prison-panel>
     </div>
 </div>
 </template>
 <script>
+import InmatePanel from '../profile/PrisonMedicalPanel.vue'
 export default {
     name: 'by-time-search',
     data() {
@@ -49,6 +35,9 @@ export default {
         doSearch: function(){
 
         }
+    },
+    components: {
+        'prison-panel': InmatePanel
     }
 }
 </script>
