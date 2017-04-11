@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div class="input-group">
-        <label class="form-control">{{medicalsShow}} </label>
+        <div :class=" medicalsShow?'':'has-error'" class="form-group "><label class="form-control">{{medicalsShow}} </label></div>
         <span class="input-group-btn">
             <button class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus text-green"></span></button>
         </span>

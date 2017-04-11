@@ -6,20 +6,21 @@
 				<div class="col-md-5">
 					<div class="input-group">
 					  <span class="input-group-addon">服刑人员编号</span>
-					  <input type="text" class="form-control" v-model="code">
+					  <div :class="code?'':'has-error'" class="form-group "><input type="text" class="form-control" v-model="code"></div>
 					</div>
 				</div>
-				<div class="col-md-5 col-md-offset-1" style="visibility:hidden">
+
+				<div class="col-md-3 col-md-offset-1" style="visibility:hidden">
 					<label>上传头像:</label><input id="fileUpload" ref="fileUpload" type="file" @change="onFileChange" style="display:inline-block;max-width:180px;margin-left:10px">
 				</div>
 			</div>
-
 			<div class="panel panel-default margint">
-				<div class="panel-heading"><label>添加所需使用的药物</label>	</div>
+				<div class="panel-heading"><label>所需使用的药物</label></div>
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-4">
 							<div class="input-group">
+								<div :class=" medicalInfo.time?'':'has-error'" class="form-group "><input class="form-control" v-model="medicalInfo.time"></input></div>
 								<div class="input-group-btn">
 									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">服药时间 
 									<span class="caret"></span></button>
@@ -27,33 +28,41 @@
 										<li v-for="value in qualifiedTime" @click="selectDropDown(value)"><a>{{value}}</a></li>
 									</ul>
 								</div><!-- /btn-group -->
-								<span class="form-control">{{medicalInfo.time}}</span>
+								
 							</div>
 						</div>
 						<div class="col-md-5">
 						    <medical-selector @selected="selectedMedicals($event)" ></medical-selector>
 						</div>
 						<div class="col-md-2">
-							<input type="text" class="form-control" placeholder="数量" v-model="medicalInfo.num">
+							<div :class=" medicalInfo.num?'':'has-error'" class="form-group">
+								<input type="text" class="form-control" placeholder="数量" v-model="medicalInfo.num">
+							</div>	
 						</div>
-						<div class="col-md-">
+						<div class="col-md-1">
 							<button class="btn btn-default" @click="pushInfo()">添加</button>
 						</div>
 					</div>
 				</div>
 			</div>	
 			
-			<div class="row margint" style="max-height: 450px;overflow-y: scroll;">
+			<div class="row margint" style="max-height: 350px;overflow-y: scroll;">
 				<div class="col-md-4" v-for=" medicalInfo in medicalList" >
-					<medical-panel :data="medicalInfo" @delete="deletePanel(medicalInfo)"></medical-panel>
+					<medical-panel :data="medicalInfo" @delete="deletePanel(medicalInfo)" @delete-medical="deleteMedical(medicalInfo, $event)"></medical-panel>
 				</div>
 			</div>
 		</div>	
 		<div class="col-md-3">
-			<a class="thumbnail" @click="uploadFile()"> <img id="header" :src="imageData" style="height: 180px; width:100%" data-holder-rendered="true"> </a>
+			<a class="thumbnail" @click="uploadFile()"> <img id="header" src="img/panda.jpg" style="height: 180px; width:100%" data-holder-rendered="true"> </a>
 		</div>
 	</div>
-	
+	<hr>
+	<div class="row margint" v-if="medicalList.length > 0">
+		<div class="col-md-2 col-md-offset-10" >
+			<button class="btn btn-success" @click="saveMedicalInfo()">保存</button>
+		</div>
+	</div>
+	<div class="alert alert-danger" role="alert"v-show="showAlert">服刑人员编号为空，无法保存</div>
 </div>
 </template>
 <script type="text/javascript">
@@ -69,9 +78,22 @@ export default {
 				time:"",
 				num:""
 			},
-			medicalList:[],
-			code:"",
-			imageData:""
+			medicalList: this.prison.medicalList? this.prison.medicalList:[]/*[
+					*
+						{
+							time:""
+							medicals:[
+								{
+									name:"",
+									num:""
+								}
+							]
+						}
+					
+			]*/,
+			code:this.prison.code,
+			imageData:this.prison.img,
+			showAlert:false
 		}
 	},
 	methods:{
@@ -86,11 +108,22 @@ export default {
                     // Note: arrow function used here, so that "this.imageData" refers to the imageData of Vue component
                     // Read image as base64 and set to imageData
                     this.imageData = e.target.result;
-                    console.info(this.imageData)
+                    //use formData to upload file
                 }
                 // Start the reader job - read file as a data url (base64 format)
                 reader.readAsDataURL(input.files[0]);
             }
+		},
+		deleteMedical: function(medicalInfo, data){
+			console.info("handle delete medical:" + JSON.stringify(data));
+			medicalInfo.medicalList = _.filter(medicalInfo.medicalList, function(m){
+				return m.name != data.name
+			});
+			if(medicalInfo.medicalList.length == 0){
+				this.medicalList = _.filter(this.medicalList, function(m){
+					return m.time != medicalInfo.time
+				})
+			}
 		},
 		uploadFile:function(){
 			this.$refs.fileUpload.click()
@@ -109,30 +142,70 @@ export default {
 		pushInfo:function(){
 			var self = this;
 			var added = false;
+			var medcialsForEachTime = []
+			if(!self.medicalInfo.name || !self.medicalInfo.time || !self.medicalInfo.num){
+				return
+			}
+			_.each(_.split(self.medicalInfo.name,','),function(n){
+				if(self.medicalInfo.num > 0){
+					medcialsForEachTime.push({
+						name:n,
+						num:self.medicalInfo.num
+					})	
+				}
+			});
 			var tempMedicalInfo = {
-				name:self.medicalInfo.name,
-				num: self.medicalInfo.num
+				'time':self.medicalInfo.time,
+				'medicalList': medcialsForEachTime
 			}
 			_.each(this.medicalList, function(mInfo){
 				if(mInfo.time == self.medicalInfo.time){
-					mInfo.medicals.push(tempMedicalInfo)
+					mInfo.medicalList = _.unionBy(medcialsForEachTime, mInfo.medicalList, 'name')
 					added = true;
 				}
 			});
 			if(!added){
-				this.medicalList.push({
-					time:self.medicalInfo.time,
-					medicals:[tempMedicalInfo]
-				})
+				this.medicalList.push(tempMedicalInfo)
 			}
 			this.medicalList = _.sortBy(this.medicalList, function(m){
 				return self.qualifiedTime.indexOf(m.time)
 			})
+		},
+		saveMedicalInfo: function(){
+			if(!this.code){
+				this.showAlert = true
+				return
+			}
+			var self = this;
+			//flattern the list
+			var flatternPrisonMedicalList = []
+			var prisonMedicalInfo = _.each(this.medicalList, function(m){
+				_.each(m.medicalList, function(xm){
+					flatternPrisonMedicalList.push(
+						{
+							'prison':self.code,
+							'time':m.time,
+							'medical': xm.name,
+							'amount':xm.num
+						})
+					});
+				})
+			console.info(flatternPrisonMedicalList);
 		}
 	},
 	components: {
 		'medical-panel': MedicalPanel,
 		MedicalSelector
+	},
+	props:{
+		'prison':{
+			type:Object,
+			default:function(){
+				return {
+				'medicalList':[]
+			}}
+		}
+		
 	}
 }
 </script>

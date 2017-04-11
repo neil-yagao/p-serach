@@ -6,13 +6,14 @@
 			  <!-- Table -->
 			<table class="table">
 				<thead>
-					<tr><td>#</td><td>药物</td><td>数量</td></tr>
+					<tr><td>#</td><td>药物</td><td>数量</td><td></td></tr>
 				</thead>
 				<tbody>
-					<tr v-for="(medical,$index) in medicalList">
+					<tr v-for="(medical,$index) in data.medicalList" :key="medical.name">
 						<td>{{$index + 1}}</td>
 						<td>{{medical.name}}</td>
 						<td>{{medical.num}}</td>
+						<td @click="deleteMedical(medical)" role="button"><span>&times;</span></td>
 					</tr>
 				</tbody>
 			</table>
@@ -28,28 +29,11 @@ export default {
 		deletePanel:function(medical){
 			this.$emit('delete')
 		},
-	},
-	computed:{
-		medicalList: function(){
-			var list = [];
-			_.each(this.data.medicals, function(m){
-				_.each(_.split(m.name,','),function(n){
-					_.remove(list, function(x){
-						return x.name == n;
-					});
-					if(m.num > 0){
-						list.push({
-							name:n,
-							num:m.num
-						})	
-					}
-					
-				});
-			})
-			return list
+		deleteMedical: function(medical){
+			console.info("delete:" + JSON.stringify(medical))
+			this.$emit('delete-medical', {name: medical.name})
 		}
 	}
-
 }	
 </script>
 
