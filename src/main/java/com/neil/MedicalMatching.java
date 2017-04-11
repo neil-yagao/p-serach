@@ -1,11 +1,13 @@
 package com.neil;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -15,7 +17,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "com.neil")
-public class MedicalMatching {
+public class MedicalMatching extends WebMvcConfigurerAdapter {
+
+    @Value("${file.location}")
+    private String fileLocation;
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/img/**").addResourceLocations(fileLocation);
+        super.addResourceHandlers(registry);
+    }
 
     public static void main(String[] args){
         SpringApplication.run(MedicalMatching.class,args);
@@ -29,6 +40,7 @@ public class MedicalMatching {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**/*").allowedOrigins("http://localhost:18080");
                 registry.addMapping("*").allowedOrigins("http://localhost:18080/inmate");
+                registry.addMapping("*").allowedOrigins("http://localhost:18080/img");
             }
         };
     }
