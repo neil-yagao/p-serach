@@ -31,7 +31,7 @@
 								
 							</div>
 						</div>
-						<div class="col-md-5">
+						<div class="col-md-4">
 						    <medical-selector @selected="selectedMedicals($event)" ></medical-selector>
 						</div>
 						<div class="col-md-2">
@@ -39,7 +39,7 @@
 								<input type="text" class="form-control" placeholder="数量" v-model="medicalInfo.num">
 							</div>	
 						</div>
-						<div class="col-md-1">
+						<div class="col-md-2">
 							<button class="btn btn-default" @click="pushInfo()">添加</button>
 						</div>
 					</div>
@@ -62,7 +62,7 @@
 			<button class="btn btn-success" @click="saveMedicalInfo()">保存</button>
 		</div>
 	</div>
-	<div class="alert alert-danger" role="alert"v-show="showAlert">服刑人员编号为空，无法保存</div>
+	<div class="alert" :class="alertClass" role="alert"v-show="showAlert">{{alertMsg}}</div>
 </div>
 </template>
 <script type="text/javascript">
@@ -93,7 +93,9 @@ export default {
 			]*/,
 			code:this.prison.code,
 			imageData:this.prison.img,
-			showAlert:false
+			showAlert:false,
+			alertClass:  "alert-danger",
+			alertMsg :''
 		}
 	},
 	methods:{
@@ -174,6 +176,7 @@ export default {
 		saveMedicalInfo: function(){
 			if(!this.code){
 				this.showAlert = true
+				this.alertMsg = "服刑人员编号为空，无法保存"
 				return
 			}
 			var self = this;
@@ -183,14 +186,21 @@ export default {
 				_.each(m.medicalList, function(xm){
 					flatternPrisonMedicalList.push(
 						{
-							'prison':self.code,
+							'code':self.code,
 							'time':m.time,
 							'medical': xm.name,
 							'amount':xm.num
 						})
 					});
 				})
-			console.info(flatternPrisonMedicalList);
+			console.info(flatternPrisonMedicalList)
+			this.$http.post('http://localhost:8080/inmate/medical', JSON.stringify(flatternPrisonMedicalList)).then((res) =>{
+				if(res.body.success){
+					this.showAlert = true
+					this.alertMsg = "添加成功"
+					this.alertClass = 'alert-success'
+				}
+			})
 		}
 	},
 	components: {

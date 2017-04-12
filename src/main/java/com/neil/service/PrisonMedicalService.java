@@ -41,7 +41,9 @@ public class PrisonMedicalService {
         DBCollection inmateMedical = template.getCollection("inmate-medical");
         for(PrisonMedicalInfo pmi: prisonMedicalInfos){
             JSONObject mapPmi = (JSONObject) JSONObject.toJSON(pmi);
-            inmateMedical.update(new BasicDBObject("code", pmi.getCode()).append("medical", pmi.getMedical()),
+            inmateMedical.update(new BasicDBObject("code", pmi.getCode())
+                            .append("medical", pmi.getMedical())
+                            .append("time", pmi.getTime()),
                     new BasicDBObject(mapPmi), true,false );
 
         }
