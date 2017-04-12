@@ -17,16 +17,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "com.neil")
-public class MedicalMatching extends WebMvcConfigurerAdapter {
+public class MedicalMatching {
 
     @Value("${file.location}")
     private String fileLocation;
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/img/**").addResourceLocations(fileLocation);
-        super.addResourceHandlers(registry);
-    }
 
     public static void main(String[] args){
         SpringApplication.run(MedicalMatching.class,args);
@@ -41,6 +36,12 @@ public class MedicalMatching extends WebMvcConfigurerAdapter {
                 registry.addMapping("/**/*").allowedOrigins("http://localhost:18080");
                 registry.addMapping("*").allowedOrigins("http://localhost:18080/inmate");
                 registry.addMapping("*").allowedOrigins("http://localhost:18080/img");
+            }
+
+            @Override
+            public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                registry.addResourceHandler("/img/**").addResourceLocations(fileLocation);
+                super.addResourceHandlers(registry);
             }
         };
     }

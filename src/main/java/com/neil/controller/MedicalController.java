@@ -1,19 +1,13 @@
 package com.neil.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.neil.pojo.Medical;
 import com.neil.pojo.MedicalList;
-import com.neil.pojo.Prison;
-import com.neil.pojo.PrisonMedicalInfo;
 import com.neil.service.MedicalInfo;
-import com.neil.service.PrisonMedicalService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 
 /**

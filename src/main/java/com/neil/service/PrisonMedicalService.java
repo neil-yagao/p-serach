@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.neil.pojo.PrisonMedicalInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,7 +24,11 @@ public class PrisonMedicalService {
 
     public List<PrisonMedicalInfo> getPrisonMedicalInfo(String code){
         DBCollection prisonMedicalCollection = template.getCollection("inmate-medical");
-        DBCursor cursor = prisonMedicalCollection.find(new BasicDBObject("code", code));
+        DBObject queryCondition = new BasicDBObject();
+        if(!code.equalsIgnoreCase("all")){
+            queryCondition.put("code", code);
+        }
+        DBCursor cursor = prisonMedicalCollection.find(queryCondition);
         List<PrisonMedicalInfo> medicalInfoList = new ArrayList<>();
         while(cursor.hasNext()){
             medicalInfoList.add(new JSONObject(cursor.next().toMap()).toJavaObject(PrisonMedicalInfo.class));
