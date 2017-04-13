@@ -48,7 +48,7 @@
 			
 			<div class="row margint" style="max-height: 350px;overflow-y: scroll;">
 				<div class="col-md-4" v-for=" medicalInfo in medicalList" >
-					<medical-panel :data="medicalInfo" @delete="deletePanel(medicalInfo)" @delete-medical="deleteMedical(medicalInfo, $event)"></medical-panel>
+					<medical-panel :data="medicalInfo" :edit="true" @delete="deletePanel(medicalInfo)" @delete-medical="deleteMedical(medicalInfo, $event)"></medical-panel>
 				</div>
 			</div>
 		</div>	
@@ -151,8 +151,8 @@ export default {
 			_.each(_.split(self.medicalInfo.name,','),function(n){
 				if(self.medicalInfo.num > 0){
 					medcialsForEachTime.push({
-						name:n,
-						num:self.medicalInfo.num
+						medical:n,
+						amount:self.medicalInfo.num
 					})	
 				}
 			});
@@ -162,7 +162,7 @@ export default {
 			}
 			_.each(this.medicalList, function(mInfo){
 				if(mInfo.time == self.medicalInfo.time){
-					mInfo.medicalList = _.unionBy(medcialsForEachTime, mInfo.medicalList, 'name')
+					mInfo.medicalList = _.unionBy(medcialsForEachTime, mInfo.medicalList, 'medical')
 					added = true;
 				}
 			});
@@ -176,7 +176,11 @@ export default {
 		saveMedicalInfo: function(){
 			if(!this.code){
 				this.showAlert = true
-				this.alertMsg = "服刑人员编号为空，无法保存"
+				this.alertMsg = "服刑人员编号为空，无法保存!"
+				var self = this
+				setTimeout(function(){
+					self.showAlert = false;
+				}, 3000);
 				return
 			}
 			var self = this;
@@ -188,8 +192,8 @@ export default {
 						{
 							'code':self.code,
 							'time':m.time,
-							'medical': xm.name,
-							'amount':xm.num
+							'medical': xm.medical,
+							'amount':xm.amount
 						})
 					});
 				})
@@ -199,6 +203,10 @@ export default {
 					this.showAlert = true
 					this.alertMsg = "添加成功"
 					this.alertClass = 'alert-success'
+					var self = this
+					setTimeout(function(){
+						self.showAlert = false;
+					}, 3000)
 				}
 			})
 		}

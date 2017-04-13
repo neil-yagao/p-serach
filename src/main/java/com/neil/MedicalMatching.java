@@ -35,7 +35,6 @@ public class MedicalMatching {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**/*").allowedOrigins("http://localhost:18080");
                 registry.addMapping("*").allowedOrigins("http://localhost:18080/inmate");
-                registry.addMapping("*").allowedOrigins("http://localhost:18080/img");
             }
 
             @Override

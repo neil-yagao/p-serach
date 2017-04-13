@@ -10,8 +10,8 @@ import WorkingSpace from './WorkingPage.vue'
 import ByNumberSearch from './component/nosearch/ByNumberSearch.vue'
 import ByTimeSearch from './component/timesearch/ByTimeSearch.vue'
 import VideoRecorder from './component/profile/VideoRecorder.vue'
-import PersonalProfile from './component/profile/PersonalProfile.vue'
-import AddPrisonMedicalInfo from './component/profile/AddPrisonMedicalInfo.vue'
+import PrisonProfile from './component/profile/PrisonProfile.vue'
+import PrisonMedicalInfo from './component/profile/PrisonMedicalInfo.vue'
 import MasterDataMain from './component/master-data/MasterDataMain.vue'
 import MasterDataMedical from './component/master-data/MasterDataMedical.vue'
 import MasterDataInmate from './component/master-data/MasterDataInmate.vue'
@@ -57,10 +57,10 @@ const routes = [{
     	},
         {
             path:'detail/:id',
-            component:PersonalProfile
+            component:PrisonProfile
         },{
             path:'add',
-            component:AddPrisonMedicalInfo
+            component:PrisonMedicalInfo
         }
     ]
 

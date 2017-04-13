@@ -51,7 +51,6 @@ export default {
 				}, 100)
 			}
     	}
-
     },
     components: {
     	'prison-panel': InmatePanel
