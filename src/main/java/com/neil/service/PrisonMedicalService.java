@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,5 +48,11 @@ public class PrisonMedicalService {
                     new BasicDBObject(mapPmi), true,false );
 
         }
+    }
+
+    public void inmateConfirmMedicalIntake(String code) {
+        DBCollection intakeRecords = template.getCollection("intake_records");
+        intakeRecords.save(new BasicDBObject("code", code)
+                .append("timestamp", new Date().getTime()));
     }
 }

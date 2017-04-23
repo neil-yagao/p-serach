@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -16,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @Configuration
 @EnableAutoConfiguration
+@EnableIntegration
 @ComponentScan(basePackages = "com.neil")
 public class MedicalMatching {
 
@@ -31,15 +32,10 @@ public class MedicalMatching {
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**/*").allowedOrigins("http://localhost:18080");
-                registry.addMapping("*").allowedOrigins("http://localhost:18080/inmate");
-            }
 
             @Override
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler("/img/**").addResourceLocations(fileLocation);
+                registry.addResourceHandler("/img/head/*.png").addResourceLocations("file:" + fileLocation + "img/head/");
                 super.addResourceHandlers(registry);
             }
         };

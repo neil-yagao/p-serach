@@ -3,10 +3,7 @@ package com.neil.controller;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by nhu on 3/31/2017.
@@ -17,8 +14,11 @@ public class LoginController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public String login(@RequestBody JSONObject login){
+    @ResponseBody
+    public JSONObject login(@RequestBody JSONObject login) {
         LOGGER.info("request body:" + login);
-        return "success";
+        if (!login.getString("key").equals("13951928868"))
+            return new JSONObject().fluentPut("identity", "prison");
+        return new JSONObject().fluentPut("identity", "police");
     }
 }

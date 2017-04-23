@@ -18,6 +18,7 @@ public class PrisonMedicalController {
     @Autowired
     private PrisonMedicalService prisonMedicalService;
 
+
     @RequestMapping(value = "inmate/medical", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject inmateMedicalInfo(@RequestBody List<PrisonMedicalInfo> prisonMedical) {
@@ -30,6 +31,14 @@ public class PrisonMedicalController {
     public List<PrisonMedicalInfo> getPrisonMedicalInfo(@PathVariable String code){
         return prisonMedicalService.getPrisonMedicalInfo(code);
     }
+
+    @RequestMapping(value = "inmate/intake/{code}", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject inmateMedicalIntake(@PathVariable String code) {
+        prisonMedicalService.inmateConfirmMedicalIntake(code);
+        return new JSONObject();
+    }
+
 
 
 
