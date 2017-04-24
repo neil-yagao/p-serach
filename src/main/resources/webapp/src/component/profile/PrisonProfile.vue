@@ -34,6 +34,7 @@
 
 import MedicalPanel from './MedicalPanel.vue'
 import router from '../../router.js'
+import moment from "moment"
 var states = ""
 export default {
     name: 'personal-profile',
@@ -56,6 +57,7 @@ export default {
         queryCurrentProfile() {
             var id = this.$route.params.id
             this.currentCode = id;
+            this.identity = window.localStorage.getItem('identity');
             this.$http.get('inmate/medical/' + id).then((res) => {
                 this.img = 'img/head/' + id + ".png"
                 var tempObject = _.groupBy(res.body, 'time')
@@ -66,10 +68,32 @@ export default {
                         'medicalList': tempObject[time]
                     })
                 }
-                this.$http.post('inmate/intake/' + id).then((res) => {
-                    console.info("confirm:" + id)
-                })
+                if (this.identity == 'prison') {
+                    var matching = this.findMatchingMedicalList(tempObject);
+                    console.info(matching)
+                    this.$http.post('inmate/intake/' + id).then((res) => {
+                        console.info("confirm:" + id)
+                    })
+                }
+
             })
+
+        },
+        findMatchingMedicalList(object) {
+            var time = moment().hour()
+            if (object[time]) {
+                return object[time]
+            }
+            var range = "";
+            if (time <= 9) {
+                return _.concat(object["早餐前"], object["早餐后"])
+            } else if (time <= 13) {
+                return _.concat(object["午餐前"], object["午餐后"])
+            } else if (time <= 19) {
+                return _.concat(object["晚餐前"], object["晚餐后"])
+            } else {
+                return object["临睡前"]
+            }
 
         }
     },

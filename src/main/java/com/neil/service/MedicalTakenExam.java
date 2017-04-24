@@ -5,6 +5,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.client.model.DBCollectionUpdateOptions;
+import com.neil.pojo.Medical;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class MedicalTakenExam {
     @Autowired
     private MongoTemplate template;
 
+    @Autowired
+    private MedicalInfo medicalInfo;
+
     @Scheduled(cron = "0 0 9,13,19,23 * * *")
     public void examineIntakeRecord() {
         LOGGER.info("exam medical intake");
@@ -36,6 +40,21 @@ public class MedicalTakenExam {
         int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
         List<JSONObject> missing = calculateTheMissingRecords(currentHour);
         persistentMissingRecord(missing);
+        reduceMedicalNumber(currentHour);
+    }
+
+    public void reduceMedicalNumber(int currentHour) {
+        Map<String, List<Integer>> intakeRecording = findIntakedRecording();
+        for (String prisonCode : intakeRecording.keySet()) {
+            DBCursor cursor = template.getCollection("inmate-medical")
+                    .find(new BasicDBObject("code", prisonCode).append("time", new BasicDBObject("$in", getPredefineList(currentHour))));
+            while (cursor.hasNext()) {
+                BasicDBObject data = (BasicDBObject) cursor.next();
+                Medical medical = new Medical(data.getString("medical"), (0 - data.getDouble("amount")));
+                medicalInfo.insertOrUpdateMedicalInfo(Collections.singletonList(medical));
+            }
+
+        }
     }
 
     public void persistentMissingRecord(List<JSONObject> missing) {
@@ -55,6 +74,7 @@ public class MedicalTakenExam {
         return getMissingRecord(intakeRecording, medicalRecord);
     }
 
+    //return code : need intaking time
     private Map<String, Set<String>> getNeedMedicalList(int currentHour) {
         List<String> timeSpan = getPredefineList(currentHour);
         Map<String, Set<String>> medicalRecord = new HashMap<>();
@@ -72,9 +92,10 @@ public class MedicalTakenExam {
         return medicalRecord;
     }
 
+    //return code : intaking hours
     private Map<String, List<Integer>> findIntakedRecording() {
         Map<String, List<Integer>> intakeRecording = new HashMap<>();
-        DBCursor cursor = template.getCollection("intake_record")
+        DBCursor cursor = template.getCollection(PrisonMedicalService.INTAKE_RECORD_COLLECTION)
                 .find(new BasicDBObject("checked", false));
         while (cursor.hasNext()) {
             JSONObject object = new JSONObject((BasicDBObject) cursor.next());
@@ -92,7 +113,7 @@ public class MedicalTakenExam {
 
     private void setIntakeRecordingChecked(Map<String, List<Integer>> intakeRecording) {
         for (String code : intakeRecording.keySet()) {
-            template.getCollection("intake_record").update(
+            template.getCollection(PrisonMedicalService.INTAKE_RECORD_COLLECTION).update(
                     new BasicDBObject("code", code).append("checked", false),
                     new BasicDBObject("$set", new BasicDBObject("checked", true)),
                     new DBCollectionUpdateOptions().multi(true)
@@ -100,6 +121,13 @@ public class MedicalTakenExam {
         }
     }
 
+    /**
+     * for each prison , compare each intaking hour is matching any need intaking time
+     *
+     * @param intakeRecording code : intaking hours
+     * @param medicalRecord   code : need intaking time
+     * @return
+     */
     private List<JSONObject> getMissingRecord(Map<String, List<Integer>> intakeRecording, Map<String, Set<String>> medicalRecord) {
         List<JSONObject> missingRecord = new ArrayList<>();
         for (String prisonCode : medicalRecord.keySet()) {
@@ -129,12 +157,12 @@ public class MedicalTakenExam {
 
     private boolean isMatching(String needTime, int intakeTime) {
         //now we only exam the time
-        //ignore the medical matching
+        //ignore the medical matching for now
         if (needTime.equals("早餐后") || needTime.equals("早餐前")) {
             return intakeTime <= 9 && intakeTime >= 6;
         } else if (needTime.equals("午餐前") || needTime.equals("午餐后")) {
             return intakeTime >= 11 && intakeTime <= 13;
-        } else if (needTime.equals("晚餐前") && needTime.equals("晚餐后")) {
+        } else if (needTime.equals("晚餐前") || needTime.equals("晚餐后")) {
             return intakeTime >= 17 && intakeTime <= 19;
         } else if (needTime.equals("临睡前")) {
             return intakeTime >= 20;

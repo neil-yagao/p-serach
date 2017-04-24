@@ -23,8 +23,13 @@ public class MedicalTakenExamTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void checkUntaken() {
-        List<JSONObject> missing = exam.calculateTheMissingRecords(23);
+        List<JSONObject> missing = exam.calculateTheMissingRecords(19);
         System.out.println(missing);
         exam.persistentMissingRecord(missing);
+    }
+
+    @Test
+    public void checkReduce() {
+        exam.reduceMedicalNumber(19);
     }
 }

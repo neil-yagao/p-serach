@@ -7,12 +7,10 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.neil.pojo.Medical;
 import com.neil.pojo.MedicalList;
-import com.neil.pojo.PrisonMedicalInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,16 +21,6 @@ public class MedicalInfo {
 
     @Autowired
     private MongoTemplate mongoTemplate;
-
-    public JSONObject getPrisonMedicalInfo(String id){
-        JSONObject medicalInfo = new JSONObject().fluentPut("id",id);
-        medicalInfo.put("img","img/panda.jpg" );
-        List<Medical> medicals = new ArrayList<>();
-        medicals.add(new Medical("诺氟沙星",2.0));
-        medicals.add(new Medical("黄连素",1.0));
-        medicalInfo.put("medicals",medicals);
-        return medicalInfo;
-    }
 
     /**
      * System will add num if record existed

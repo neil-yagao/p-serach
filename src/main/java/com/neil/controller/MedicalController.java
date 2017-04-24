@@ -25,12 +25,6 @@ public class MedicalController {
         return new ModelAndView("index.html");
     }
 
-    @RequestMapping(value = "medical/{id}" ,method = RequestMethod.GET)
-    @ResponseBody
-    public JSONObject medicalInfo(@PathVariable String id){
-        LOGGER.debug("query medical info:" + id);
-        return medicalInfo.getPrisonMedicalInfo(id);
-    }
 
     @RequestMapping(value = "medicals", method = RequestMethod.POST)
     @ResponseBody

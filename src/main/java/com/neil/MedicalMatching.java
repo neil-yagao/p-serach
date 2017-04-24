@@ -35,8 +35,8 @@ public class MedicalMatching {
 
             @Override
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler("/img/head/*.png").addResourceLocations("file:" + fileLocation + "img/head/");
                 super.addResourceHandlers(registry);
+                registry.addResourceHandler("/img/head/*.png").addResourceLocations("file:" + fileLocation + "img/head/");
             }
         };
     }

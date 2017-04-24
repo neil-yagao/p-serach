@@ -11,7 +11,7 @@
        <a href="#/working/data-edit" class="btn-lg"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
       </li>
       <li role="presentation" style="float:right" title="登出">
-       <a href="#/" class="btn-lg"><span class="glyphicon glyphicon-off" style="color:red" aria-hidden="true"></span></a>
+       <a class="btn-lg"><span class="glyphicon glyphicon-off" style="color:red" aria-hidden="true" @click="logout()"></span></a>
       </li>
     </ul>
      <router-view id="working-area" class="container-fluid"  style="margin-top:10px"></router-view>
@@ -32,7 +32,10 @@
         }
     },
     methods: {
-    	
+    	logout(){
+    		window.location.href = "#/";
+    		window.localStorage.setItem('identity', '');
+    	}
     },
     mounted: function() {
         var self = this;
